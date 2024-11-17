@@ -12,15 +12,24 @@ public class AvtoVaz {
     private Spoiler spoiler;
     private Transmission transmission;
     private HashMap<Position, Wheel> wheels;
-    private AvtoVaz(AvtoVazBuilder builder){
-        body = builder.body;
-        engine = builder.engine;
-        steeringGear = builder.steeringGear;
-        transmission = builder.transmission;
+    FactoryForDetail detail = new FactoryForDetail();
+    private AvtoVaz(AvtoVazBuilder builder) throws MyException {
+        body = detail.createBody(builder.body.getColor());
+        engine = detail.createEngine(builder.engine.getV());
+        steeringGear = detail.createSteeringGear(builder.steeringGear.isHydro_booster());
+        transmission = detail.createTransmission(builder.transmission.isAuto(), builder.transmission.getCount());
+        spoiler = detail.createSpoiler(builder.spoiler.getColor());
         wheels = new HashMap<>();
         for(Map.Entry<Position, Wheel> entry : builder.wheels.entrySet()){
-            wheels.put(entry.getKey(), entry.getValue());
+            wheels.put(entry.getKey(), detail.createWheel(entry.getValue().getD()));
         }
+    }
+
+    public void changeColor(String color){
+        if(body != null)
+            body.setColor(color);
+        if(spoiler!=null)
+            spoiler.setColor(color);
     }
 
     @Override
@@ -88,15 +97,12 @@ public class AvtoVaz {
             return this;
         }
         public AvtoVazBuilder setSpoiler(Spoiler spoiler){
-            if(body != null)
-                if(body.getColor().equals( spoiler.getColor()))
-                    this.spoiler = spoiler;
+            this.spoiler = spoiler;
             return this;
         }
 
         public AvtoVazBuilder setEngine(Engine engine) {
-            if(engine.getV() == Volume.FIRST || engine.getV() == Volume.SECOND)
-                this.engine = engine;
+            this.engine = engine;
             return this;
         }
 
@@ -106,53 +112,38 @@ public class AvtoVaz {
         }
 
         public AvtoVazBuilder setTransmission(Transmission transmission) {
-            if(!transmission.isAuto())
-                this.transmission = transmission;
+            this.transmission = transmission;
             return this;
         }
 
-        public AvtoVazBuilder addWheel(Wheel wheel){
-            Set<Position> key = wheels.keySet();
-            if(key.isEmpty()) {
-                wheels.put(Position.FIRST, wheel);
-                return this;
+        public AvtoVazBuilder addWheel(Wheel wheel, Position position){
+            wheels.put(position, wheel);
+            return this;
+        }
+
+        public AvtoVaz build() throws MyException{
+            if(body==null)
+                throw new MyException("Отсутствует корпус");
+            if(engine == null)
+                throw new MyException("Отсутствует двигатель");
+            if(engine.getV() != Volume.FIRST && engine.getV() != Volume.SECOND)
+                throw new MyException("Двигатель не подходит");
+            if(transmission==null)
+                throw new MyException("Отсутствует коробка передач");
+            if(transmission.isAuto())
+                throw new MyException("Коробка передач не подходит для данной марки");
+            if(wheels.size() < 4)
+                throw new MyException("Меньше четырёх колёс");
+            if(spoiler != null){
+                if(!spoiler.getColor().equals(body.getColor()))
+                    throw new MyException("Цвет спойлера не совпадает с цветом корпуса");
             }
-            if(key.size() == 4)
-                return this;
-            boolean[] flag = {false, false, false, false};
-            boolean diameter = true;
+            int sum = 0;
             for(Map.Entry<Position, Wheel> entry : wheels.entrySet()){
-                Position p = entry.getKey();
-                Wheel ent = entry.getValue();
-                if(ent.getD().equals(wheel.getD()))
-                {
-                    diameter = false;
-                    break;
-                }
-                flag[p.getI()] = true;
+                sum += entry.getValue().getD().getD();
             }
-            if(diameter){
-                Position p = null;
-                int id = 0;
-                for (int i = 0; i < 4; i++) {
-                    if(!flag[i])
-                    {
-                        id = i;
-                        break;
-                    }
-                }
-                switch(id){
-                    case 0: p = Position.FIRST;break;
-                    case 1: p = Position.SECOND;break;
-                    case 2: p = Position.THIRD;break;
-                    case 3: p = Position.FOURTH;break;
-                }
-                wheels.put(p, wheel);
-            }
-            return this;
-        }
-
-        public AvtoVaz build(){
+            if(sum%4 != 0)
+                throw new MyException("Колёса разного диаметра");
             return new AvtoVaz(this);
         }
     }
