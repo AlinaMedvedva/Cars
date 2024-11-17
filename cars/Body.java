@@ -15,4 +15,8 @@ public class Body {
     public String toString() {
         return "Цвет корпуса: " + color;
     }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
 }
