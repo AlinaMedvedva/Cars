@@ -19,7 +19,8 @@ public class Mercedes {
         engine = detail.createEngine(builder.engine.getV());
         steeringGear = detail.createSteeringGear(builder.steeringGear.isHydro_booster());
         transmission = detail.createTransmission(builder.transmission.isAuto(), builder.transmission.getCount());
-        spoiler = detail.createSpoiler(builder.spoiler.getColor());
+        if(builder.spoiler != null)
+            spoiler = detail.createSpoiler(builder.spoiler.getColor());
         wheels = new HashMap<>();
         for(Map.Entry<Position, Wheel> entry : builder.wheels.entrySet()){
             wheels.put(entry.getKey(), detail.createWheel(entry.getValue().getD()));
@@ -27,8 +28,7 @@ public class Mercedes {
     }
 
     public void changeColor(String color){
-        if(body != null)
-            body.setColor(color);
+        body.setColor(color);
         if(spoiler!=null)
             spoiler.setColor(color);
     }
