@@ -15,4 +15,8 @@ public class Spoiler {
     public String toString() {
         return "Цвет спойлера: " + color;
     }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
 }
