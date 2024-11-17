@@ -7,7 +7,7 @@ public class main {
         FactoryForBuilder builders = new FactoryForBuilder();
 
         Body body = detail.createBody("blue");
-        Spoiler spoiler = detail.createSpoiler("green");
+        Spoiler spoiler = detail.createSpoiler("blue");
         Engine engine = detail.createEngine(Volume.SECOND);
         SteeringGear steeringGear =  detail.createSteeringGear(true);
         try {
@@ -15,10 +15,17 @@ public class main {
             Wheel wheel = detail.createWheel(Diameter.FIRST);
 
             Mercedes.MercedesBuilder mercedesBuilder = builders.createMercedesBuilder();
-            Mercedes m = mercedesBuilder.setBody(body).setEngine(engine).setSpoiler(spoiler).setSteeringGear(steeringGear).
-                    setTransmission(transmission).addWheel(wheel).build();
-            System.out.println(m);
+            mercedesBuilder = mercedesBuilder.setBody(body).setSpoiler(spoiler).setEngine(engine).setTransmission(transmission).setSteeringGear(steeringGear);
+            mercedesBuilder = mercedesBuilder.addWheel(wheel, Position.FIRST).addWheel(wheel, Position.SECOND).addWheel(wheel, Position.THIRD).addWheel(wheel, Position.FOURTH);
+            Mercedes m1 = mercedesBuilder.build();
+            Mercedes m2 = mercedesBuilder.build();
+            m2.changeColor("red");
+            System.out.println(m1);
+            System.out.println();
+            System.out.println(m2);
         } catch (MyException e) {
+            System.out.println(e.getMessage());
+        } catch (arithmetic.MyException e) {
             System.out.println(e.getMessage());
         }
 
