@@ -1,11 +1,11 @@
 package cars;
 
 public abstract class AbstractFactory {
-    public Mercedes.MercedesBuilder createMercedesBuilder() {
+    public Cars.MercedesBuilder createMercedesBuilder() {
         return null;
     }
 
-    public AvtoVaz.AvtoVazBuilder createAvtoVazBuilder() {
+    public Cars.AvtoVazBuilder createAvtoVazBuilder() {
         return null;
     }
     public Body createBody(String color){
