@@ -1,11 +1,11 @@
 package cars;
 
 public class FactoryForBuilder extends AbstractFactory{
-    public Mercedes.MercedesBuilder createMercedesBuilder(){
-        return new Mercedes.MercedesBuilder();
+    public Cars.MercedesBuilder createMercedesBuilder(){
+        return new Cars.MercedesBuilder();
     }
 
-    public AvtoVaz.AvtoVazBuilder createAvtoVazBuilder(){
-        return new AvtoVaz.AvtoVazBuilder();
+    public Cars.AvtoVazBuilder createAvtoVazBuilder(){
+        return new Cars.AvtoVazBuilder();
     }
 }
